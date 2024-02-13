@@ -136,12 +136,14 @@ def graphe(n) :
 		if  0 <= i-1 < n and  0 <= j+2 < n : E[k].append((i-1)*n+(j+2))
 		if  0 <= i+1 < n and  0 <= j-2 < n : E[k].append((i+1)*n+(j-2))
 		if  0 <= i+1 < n and  0 <= j+2 < n : E[k].append((i+1)*n+(j+2))
-		
+
 	return E
 
 
 def cavalierHamiltonHeuristique(n) :
-	""" recherche d'un chemin hamiltonien dans le graphe du cavalier."""
+	""" 
+		recherche d'un chemin hamiltonien dans le graphe du cavalier.
+	"""
 	chemin = [] # contiendra les cases dans leur ordre de visite
 	parcours(random.randint(0,n*n-1), chemin)
 	return chemin
@@ -155,7 +157,7 @@ def parcours(case, chemin) :
 	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 	E = graphe(LONGUEUR)
 	
-	if len(chemin) == LONGUEUR*LARGEUR :
+	if len(chemin) == LONGUEUR*LARGEUR:
 		gagne = True
 
 	else :
@@ -163,12 +165,15 @@ def parcours(case, chemin) :
 		voisins = [ u for u in E[case] if u not in chemin ] # voisins non visités de case
 		voisinsNbPossibles = []
 
+		# --------Permet d'aller plus vite-------- 
 		for u in voisins :
 			nb = len( [v for v in E[u] if v not in chemin]) # nb de possibles à partir de u
 			voisinsNbPossibles.append([u,nb])
 
 		voisinsNbPossibles.sort(key= lambda x:x[1])# tri croissant suivant le nombre de possibles
 		voisins = [ x[0] for x in voisinsNbPossibles ] # on récupère uniquement les voisins
+
+		# ----------------------------------------- 
 
 		cmpt = 0
 		while cmpt < len(voisins) and gagne == False:
