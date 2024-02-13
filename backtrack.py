@@ -136,6 +136,7 @@ def graphe(n) :
 		if  0 <= i-1 < n and  0 <= j+2 < n : E[k].append((i-1)*n+(j+2))
 		if  0 <= i+1 < n and  0 <= j-2 < n : E[k].append((i+1)*n+(j-2))
 		if  0 <= i+1 < n and  0 <= j+2 < n : E[k].append((i+1)*n+(j+2))
+		
 	return E
 
 
@@ -156,20 +157,27 @@ def parcours(case, chemin) :
 	
 	if len(chemin) == LONGUEUR*LARGEUR :
 		gagne = True
+
 	else :
 		gagne = False
 		voisins = [ u for u in E[case] if u not in chemin ] # voisins non visités de case
 		voisinsNbPossibles = []
+
 		for u in voisins :
 			nb = len( [v for v in E[u] if v not in chemin]) # nb de possibles à partir de u
 			voisinsNbPossibles.append([u,nb])
+
 		voisinsNbPossibles.sort(key= lambda x:x[1])# tri croissant suivant le nombre de possibles
 		voisins = [ x[0] for x in voisinsNbPossibles ] # on récupère uniquement les voisins
-		for v in voisins :
-			if gagne : break
-			else : gagne = parcours(v, chemin)
+
+		cmpt = 0
+		while cmpt < len(voisins) and gagne == False:
+			gagne = parcours(voisins[cmpt], chemin)
+			cmpt+=1
+
 		if not gagne :
 			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
+
 	return gagne
 
 
