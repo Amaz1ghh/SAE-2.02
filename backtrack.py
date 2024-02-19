@@ -1,13 +1,12 @@
 import random
-import time
 from tkinter import *
 
 LONGUEUR = 5
-LARGEUR = 5
+LARGEUR = 7
 
 class Case:
     def __init__(self, coorX, coorY):
-        self.numCase = (coorX, coorY)  #indice de la case (Lettre-Numero)
+        self.numCase = (coorX, coorY)  #indice de la case -> couple de coordonnées
         self.relCase = []
         
         self.dejaVu = False     # si deja vu, la case est en rouge et on ne peut plus aller dessus
@@ -16,94 +15,94 @@ class Case:
 class Plateau:
 
     # Constructeur
-    def __init__(self, cavX, cavY):
+    def __init__(self, cavX, cavY, anim = False):
         """constructeur"""
         self.plateau = []
         self.cavX = cavX    #coordonnées de base du cavalier
         self.cavY = cavY
-        self.nbCasesRemplies = 1
-        for i in range(LONGUEUR):
+        self.animation = anim
+        for i in range(LARGEUR):
             self.plateau.append([])
-            for j in range(LARGEUR):
+            for j in range(LONGUEUR):
                 self.plateau[i].append(Case(i, j))
         self.initGraphe()
         self.plateau[self.cavX][self.cavY].estDessus = True
         self.plateau[self.cavX][self.cavY].dejaVu = True
         chemin = self.backtracking(self.cavX, self.cavY)
 
+        if self.animation:
+            # création fenêtre et frames tkinter
+            self.fenetre = Tk()
+            self.fenetre.geometry('700x700')
+            self.fenetre.title('Parcours Du Cavalier')
+            self.fenetre['bg'] = '#F6B22F'
+            self.fenetre.resizable(width=False, height=False)
 
-    #     # création fenêtre et frames tkinter
-    #     # Note aux collègues: d'ici jusqu'à la fin de maj_affichage c'est pour afficher la fenetre au lancement
-    #     self.fenetre = Tk()
-    #     self.fenetre.geometry('700x700')
-    #     self.fenetre.title('Parcours Du Cavalier')
-    #     self.fenetre['bg'] = '#F6B22F'
-    #     self.fenetre.resizable(width=False, height=False)
+            self.fenetre.update_idletasks()
+            largeur_fenetre = self.fenetre.winfo_height()
+            longueur_fenetre = self.fenetre.winfo_width()
+            self.longueur_case = longueur_fenetre / LONGUEUR
+            self.largeur_case = largeur_fenetre / LARGEUR
 
-    #     self.fenetre.update_idletasks()
-    #     longueur_fenetre = self.fenetre.winfo_height()
-    #     largeur_fenetre = self.fenetre.winfo_width()
-    #     self.longueur_case = longueur_fenetre / LONGUEUR
-    #     self.largeur_case = largeur_fenetre / LARGEUR
+            self.image_cavalier = PhotoImage(file='cavalier.png')
 
-    #     self.image_cavalier = PhotoImage(file='cavalier.png')
+            self.image_cavalier = self.image_cavalier.subsample(int(self.image_cavalier.width() / self.longueur_case)+1, int(self.image_cavalier.height() / self.largeur_case)+1)
 
-    #     self.image_cavalier = self.image_cavalier.subsample(int(self.image_cavalier.width() / self.longueur_case)+1, int(self.image_cavalier.height() / self.largeur_case)+1)
+            self.labels_cavalier = []
 
-    #     self.labels_cavalier = []
+            for ligne in range(LARGEUR):
+                for colonne in range(LONGUEUR):
+                        couleur_case = "#D2B48C" if (ligne + colonne) % 2 == 0 else "#8B4513"
+                        
+                        case = Frame(self.fenetre, width=self.longueur_case, height=self.largeur_case, bg=couleur_case)
+                        
+                        case.grid(row=ligne, column=colonne)
+            
+            self.deplacer_cavalier(chemin, 0)
+            self.fenetre.mainloop()
 
-    #     for ligne in range(LARGEUR):
-    #         for colonne in range(LONGUEUR):
-    #             couleur_case = "#D2B48C" if (ligne + colonne) % 2 == 0 else "#8B4513"
-    #             if (self.plateau[ligne][colonne].dejaVu):
-    #                 couleur_case = "red"
+    def maj_affichage(self, ligne, colonne):
+        # Met à jour l'affichage en fonction de l'état actuel de la case
 
-    #             case = Frame(self.fenetre, width=self.longueur_case, height=self.largeur_case, bg=couleur_case)
-    #             case.grid(row=ligne, column=colonne)
+        case = self.plateau[ligne][colonne]
 
-    #             self.maj_affichage(ligne, colonne)
-        
-    #     self.deplacer_cavalier(chemin, 0)
-
-    # def maj_affichage(self, ligne, colonne):
-    #     # Met à jour l'affichage en fonction de l'état actuel de la case
-
-    #     case = self.plateau[ligne][colonne]
-
-    #     if case.estDessus:
-    #         label_cavalier = Label(self.fenetre, image=self.image_cavalier, bg="red")
-    #         label_cavalier.image = self.image_cavalier
-    #         label_cavalier.grid(row=ligne, column=colonne)
-    #         self.labels_cavalier.append(label_cavalier)
-    #     else:
-    #         # Supprime le label s'il existe
-    #         for label in self.labels_cavalier:
-    #             if label.grid_info()['row'] == ligne and label.grid_info()['column'] == colonne:
-    #                 label.grid_forget()
-    #                 self.labels_cavalier.remove(label)
-
+        if case.estDessus:
+            case = Frame(self.fenetre, width=self.longueur_case, height=self.largeur_case, bg='red')
+            case.grid(row=ligne, column=colonne)
+            label_cavalier = Label(self.fenetre, image=self.image_cavalier, bg="red")
+            label_cavalier.image = self.image_cavalier
+            label_cavalier.grid(row=ligne, column=colonne)
+            self.labels_cavalier.append(label_cavalier)
+        else:
+            # Supprime le label s'il existe
+            for label in self.labels_cavalier:
+                if label.grid_info()['row'] == ligne and label.grid_info()['column'] == colonne:
+                    label.grid_forget()
+                    self.labels_cavalier.remove(label)
     
-    # def deplacer_cavalier(self, chemin, index):
-    #     # Déplace le cavalier à l'index spécifié dans le chemin
-    #     if index < len(chemin):
-    #         ligne, colonne = chemin[index]
+    def deplacer_cavalier(self, chemin, index):
+            # Déplace le cavalier à l'index spécifié dans le chemin
+            if index < len(chemin):
+                pre_ligne, pre_colonne = chemin[index-1]
+                ligne, colonne = chemin[index]
+                self.plateau[pre_ligne][pre_colonne].estDessus = False
+                self.maj_affichage(pre_ligne, pre_colonne)
 
-    #         # Met à jour les coordonnées du cavalier sur le plateau
-    #         self.plateau[self.cavX][self.cavY].estDessus = False
-    #         self.cavX, self.cavY = ligne, colonne
-    #         self.plateau[self.cavX][self.cavY].estDessus = True
+                # Met à jour les coordonnées du cavalier sur le plateau
+                self.cavX, self.cavY = ligne, colonne
+                self.plateau[self.cavX][self.cavY].estDessus = True
 
-    #         # Met à jour l'affichage
-    #         self.maj_affichage(ligne, colonne)
+                # Met à jour l'affichage
+                self.maj_affichage(ligne, colonne)
 
-    #         # Appel récursif avec un délai de 500 millisecondes (ajustez selon vos besoins)
-    #         self.fenetre.after(500, lambda: self.deplacer_cavalier(chemin, index + 1))
+                # Appel récursif avec un délai de 500 millisecondes
+                self.fenetre.after(500, lambda: self.deplacer_cavalier(chemin, index + 1))
+                
 
-    
 
     def initGraphe(self):
-        for i in range(LONGUEUR):
-            for j in range(LARGEUR):
+        for i in range(LARGEUR):
+            for j in range(LONGUEUR):
                 if (i-2 >= 0):
                     if (j-1 >= 0):
                         self.plateau[i][j].relCase.append(self.plateau[i-2][j-1].numCase)
@@ -117,24 +116,40 @@ class Plateau:
                 if (j-2 >= 0):
                     if (i-1 >= 0):
                         self.plateau[i][j].relCase.append(self.plateau[i-1][j-2].numCase)
-                    if (i+1 < LONGUEUR):
+                    if (i+1 < LARGEUR):
                         self.plateau[i][j].relCase.append(self.plateau[i+1][j-2].numCase)
-
                 if (j+2 < LONGUEUR):
                     if (i-1 >= 0):
                         self.plateau[i][j].relCase.append(self.plateau[i-1][j+2].numCase)
-                    if (i+1 < LONGUEUR):
+                    if (i+1 < LARGEUR):
                         self.plateau[i][j].relCase.append(self.plateau[i+1][j+2].numCase)
              
     
-    #def backtracking():
-         
     
+    def backtracking(self, x, y, chain=None):
+        if chain is None:
+            chain = []
+
+        chain.append(self.plateau[x][y].numCase)
+        self.plateau[x][y].dejaVu = True
+
+        if len(chain) == LONGUEUR * LARGEUR:
+            return chain
+
+        for relation in self.plateau[x][y].relCase:
+            next_x, next_y = relation
+            if not self.plateau[next_x][next_y].dejaVu:
+                ext_chain = self.backtracking(next_x, next_y, chain)
+                if ext_chain:
+                    return ext_chain
+
+        self.plateau[x][y].dejaVu = False
+        chain.pop()
+
+        return None
           
 
-jeu = Plateau(0, 0)
-
-jeu.fenetre.mainloop()
+jeu = Plateau(0, 0, True)
 
 
 
