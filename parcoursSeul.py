@@ -13,7 +13,7 @@ def graphe() :
 	for i in range(LONGUEUR):
 		ls = []
 		for j in range(LARGEUR):
-			ls.append(i*LONGUEUR + j+1)
+			ls.append(i*LONGUEUR + j)
 		Tab.append(ls)
 
 	print(Tab)
@@ -22,16 +22,16 @@ def graphe() :
 	for i in range(0,LONGUEUR) :
 		for j in range(0,LARGEUR):
 
-			E[i*LONGUEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
-			if 0 <= i-2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j-1])
-			if 0 <= i-2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j+1])
-			if 0 <= i+2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j-1])
-			if 0 <= i+2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j+1])
+			E[i*LONGUEUR + j] = [] # E[k]  : liste des voisins de la case k
+			if 0 <= i-2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-2][j-1])
+			if 0 <= i-2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-2][j+1])
+			if 0 <= i+2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+2][j-1])
+			if 0 <= i+2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+2][j+1])
 	
-			if 0 <= i-1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j-2])
-			if 0 <= i-1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j+2])
-			if 0 <= i+1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j-2])
-			if 0 <= i+1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j+2])
+			if 0 <= i-1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-1][j-2])
+			if 0 <= i-1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-1][j+2])
+			if 0 <= i+1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+1][j-2])
+			if 0 <= i+1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+1][j+2])
 	
 	return E
 
@@ -92,24 +92,25 @@ def parcours(case, chemin, graphe) :
 def affichage() :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
 
-	t = [[0 for j in range(LONGUEUR) ] for k in range(LARGEUR)]
 	chemin = cavalierHamiltonHeuristique(graphe())
 
 	print(chemin)
 
-	rg = 1
-	str = ""
-	for x in chemin :
-		print(" ",x," ")
+	Tab = [[0 for i in range(LONGUEUR)] for j in range(LARGEUR)]
 
-		if rg >= LONGUEUR:
-			rg = 0
-			print("\n")
-		rg += 1
+	cmpt = 0
+	for i in range(len(Tab)):
+		for j in range(len(Tab[i])):
+			Tab[i][j] = chemin[cmpt]
+			cmpt +=1
 
-	for ligne in t :
-		for c in ligne :
-			print(c, end=" ")
+	
+	for x in Tab :
+		for y in x:
+			if y < 10:
+				print("0", end="")
+			print(y,end = " ")
 		print()
+
 
 affichage()
