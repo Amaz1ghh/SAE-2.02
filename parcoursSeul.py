@@ -1,8 +1,8 @@
 import random
 from tkinter import *
 
-LONGUEUR = 6
-LARGEUR = 6
+LONGUEUR = 8
+LARGEUR = 8
 
 alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
@@ -12,7 +12,7 @@ def graphe() :
 	for i in range(LARGEUR):
 		ls = []
 		for j in range(LONGUEUR):
-			ls.append(i*LARGEUR + j + 1)
+			ls.append(i*LONGUEUR + j + 1)
 		Tab.append(ls)
 
 	print(Tab)
@@ -21,27 +21,27 @@ def graphe() :
 	for i in range(0,LARGEUR) :
 		for j in range(0,LONGUEUR):
 
-			E[i*LARGEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
-			if 0 <= i-2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-2][j-1])
-			if 0 <= i-2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-2][j+1])
-			if 0 <= i+2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+2][j-1])
-			if 0 <= i+2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+2][j+1])
+			E[i*LONGUEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
+			if 0 <= i-2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j-1])
+			if 0 <= i-2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j+1])
+			if 0 <= i+2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j-1])
+			if 0 <= i+2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j+1])
 	
-			if 0 <= i-1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-1][j-2])
-			if 0 <= i-1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-1][j+2])
-			if 0 <= i+1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+1][j-2])
-			if 0 <= i+1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+1][j+2])
+			if 0 <= i-1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j-2])
+			if 0 <= i-1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j+2])
+			if 0 <= i+1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j-2])
+			if 0 <= i+1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j+2])
 	
 	return E
 
 
-def cavalierHamiltonHeuristique(graphe) :
+def cavalierHamiltonHeuristique(graphe, case_dep) :
 	""" 
 		recherche d'un chemin hamiltonien dans le graphe du cavalier.
 	"""
 	chemin = [] # contiendra les cases dans leur ordre de visite
 	print(graphe)
-	parcours(random.randint(0,LONGUEUR*LARGEUR-1), chemin, graphe)
+	parcours(case_dep, chemin, graphe)
 	return chemin
 
 
@@ -59,6 +59,7 @@ def parcours(case, chemin, graphe) :
 	else :
 		voisins = []
 		gagne = False
+		print(graphe[case])
 		for u in graphe[case]:
 			if u not in chemin:
 				voisins.append(u)
@@ -67,7 +68,6 @@ def parcours(case, chemin, graphe) :
 		# --------Permet d'aller plus vite-------- 
 
 		voisinsNbPossibles = []
-
 		for u in voisins :
 			nb = len( [v for v in graphe[u] if v not in chemin]) # nb de possibles à partir de u
 			voisinsNbPossibles.append([u,nb])
@@ -91,27 +91,31 @@ def parcours(case, chemin, graphe) :
 def affichage() :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
 
-	chemin = cavalierHamiltonHeuristique(graphe())
+	case_dep = random.randint(1,LONGUEUR*LARGEUR)
+	chemin = cavalierHamiltonHeuristique(graphe(), case_dep)
 
 	print(chemin)
 
-	Tab = [0 for i in range(LONGUEUR*LARGEUR)]
+	if len(chemin) < LONGUEUR*LARGEUR: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
+	else:
 
-	
-	for i in range(len(Tab)):
-		Tab[chemin[i]-1] = i
-		print(Tab)
+		Tab = [0 for i in range(LONGUEUR*LARGEUR)]
 
-	rg = 1
-	for x in Tab :
-		if x < 10:
-			print("0", end="")
-		print(x,end = " ")
 
-		if rg >= LONGUEUR:
-			print()
-			rg = 1
-		else : rg+=1
+		for i in range(len(Tab)):
+			Tab[chemin[i]-1] = i
+
+		rg = 1
+		for x in Tab :
+			x +=1
+			if x < 10:
+				print("0", end="")
+			print(x,end = " ")
+
+			if rg >= LONGUEUR:
+				print()
+				rg = 1
+			else : rg+=1
 
 
 
