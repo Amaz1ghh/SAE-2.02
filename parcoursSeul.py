@@ -1,37 +1,36 @@
 import random
 from tkinter import *
 
-LONGUEUR = 8
-LARGEUR = 8
+LONGUEUR = 6
+LARGEUR = 6
+
 alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
 
 def graphe() :
-
-
 	Tab = []
-	for i in range(LONGUEUR):
+	for i in range(LARGEUR):
 		ls = []
-		for j in range(LARGEUR):
-			ls.append(i*LONGUEUR + j)
+		for j in range(LONGUEUR):
+			ls.append(i*LARGEUR + j + 1)
 		Tab.append(ls)
 
 	print(Tab)
 
 	E = dict()
-	for i in range(0,LONGUEUR) :
-		for j in range(0,LARGEUR):
+	for i in range(0,LARGEUR) :
+		for j in range(0,LONGUEUR):
 
-			E[i*LONGUEUR + j] = [] # E[k]  : liste des voisins de la case k
-			if 0 <= i-2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-2][j-1])
-			if 0 <= i-2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-2][j+1])
-			if 0 <= i+2 < LONGUEUR and  0 <= j-1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+2][j-1])
-			if 0 <= i+2 < LONGUEUR and  0 <= j+1 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+2][j+1])
+			E[i*LARGEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
+			if 0 <= i-2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-2][j-1])
+			if 0 <= i-2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-2][j+1])
+			if 0 <= i+2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+2][j-1])
+			if 0 <= i+2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+2][j+1])
 	
-			if 0 <= i-1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-1][j-2])
-			if 0 <= i-1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i-1][j+2])
-			if 0 <= i+1 < LONGUEUR and  0 <= j-2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+1][j-2])
-			if 0 <= i+1 < LONGUEUR and  0 <= j+2 < LARGEUR : E[i*LONGUEUR + j].append(Tab[i+1][j+2])
+			if 0 <= i-1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-1][j-2])
+			if 0 <= i-1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i-1][j+2])
+			if 0 <= i+1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+1][j-2])
+			if 0 <= i+1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LARGEUR + j + 1].append(Tab[i+1][j+2])
 	
 	return E
 
@@ -96,21 +95,24 @@ def affichage() :
 
 	print(chemin)
 
-	Tab = [[0 for i in range(LONGUEUR)] for j in range(LARGEUR)]
-
-	cmpt = 0
-	for i in range(len(Tab)):
-		for j in range(len(Tab[i])):
-			Tab[i][j] = chemin[cmpt]
-			cmpt +=1
+	Tab = [0 for i in range(LONGUEUR*LARGEUR)]
 
 	
+	for i in range(len(Tab)):
+		Tab[chemin[i]-1] = i
+		print(Tab)
+
+	rg = 1
 	for x in Tab :
-		for y in x:
-			if y < 10:
-				print("0", end="")
-			print(y,end = " ")
-		print()
+		if x < 10:
+			print("0", end="")
+		print(x,end = " ")
+
+		if rg >= LONGUEUR:
+			print()
+			rg = 1
+		else : rg+=1
+
 
 
 affichage()
