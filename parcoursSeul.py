@@ -1,8 +1,8 @@
 import random
 from tkinter import *
 
-LONGUEUR = 8
-LARGEUR = 8
+LONGUEUR = 5
+LARGEUR = 5
 
 alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
@@ -59,7 +59,6 @@ def parcours(case, chemin, graphe) :
 	else :
 		voisins = []
 		gagne = False
-		print(graphe[case])
 		for u in graphe[case]:
 			if u not in chemin:
 				voisins.append(u)
