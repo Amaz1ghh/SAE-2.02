@@ -1,0 +1,6 @@
+ - Un échiquier
+ - Un jeton de cavalier qui va se déplacer sur les cases
+ - Des points qui vont indiquer les cases déjà visités
+ - Petites lignes qui lie les points pour visualiser le chemin du cavalier
+
+Prend en paramètre une liste de case.
