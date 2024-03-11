@@ -103,11 +103,10 @@ def affichage() :
 
 
 			for i in range(len(Tab)):
-				Tab[chemin[i]-1] = i
+				Tab[chemin[i]-1] = i +1 
 			
 			rg = 1
 			for x in Tab :
-				x +=1
 				if x < 10:
 					print("0", end="")
 				print(x,end = " ")
