@@ -77,7 +77,7 @@ def parcours(case, chemin, graphe) :
 		# ----------------------------------------- 
 
 		cmpt = 0
-		while cmpt < len(voisins) and gagne == False:
+		while cmpt < len(voisins) and not gagne:
 			gagne = parcours(voisins[cmpt], chemin, graphe)
 			cmpt+=1
 
