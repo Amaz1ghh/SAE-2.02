@@ -1,8 +1,8 @@
 import random
 from tkinter import *
 
-LONGUEUR = 6
-LARGEUR = 6
+LONGUEUR = 5
+LARGEUR = 5
 
 alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
@@ -15,7 +15,7 @@ def graphe() :
 			ls.append(i*LONGUEUR + j + 1)
 		Tab.append(ls)
 
-	print(Tab)
+	# print(Tab)
 
 	E = dict()
 	for i in range(0,LARGEUR) :
@@ -34,32 +34,23 @@ def graphe() :
 	
 	return E
 
-
-def cavalierHamiltonHeuristique(graphe, case_dep) :
-	""" 
-		recherche d'un chemin hamiltonien dans le graphe du cavalier.
-	"""
-	chemin = [] # contiendra les cases dans leur ordre de visite
-	chemins = []
-	print(graphe)
-	parcours(case_dep, chemin, graphe, chemins)
-	return chemins
-
-
 def parcours(case, chemin, graphe, chemins) :
 	"""
 		case : case actuelle du cavalier.
 	"""
+	if chemin is None:
+		chemin=[]
+	if chemins is None:
+		chemins=[]
+
 	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 
 	
 	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
 		chemins.append(chemin.copy())
-		gagne = False
 
 	else :
 		voisins = []
-		gagne = False
 		for u in graphe[case]:
 			if u not in chemin:
 				voisins.append(u)
@@ -78,26 +69,25 @@ def parcours(case, chemin, graphe, chemins) :
 		# ----------------------------------------- 
 
 		cmpt = 0
-		while cmpt < len(voisins) and gagne == False:
-			gagne = parcours(voisins[cmpt], chemin, graphe, chemins)
+		while cmpt < len(voisins):
+			chemins = parcours(voisins[cmpt], chemin, graphe, chemins)
 			cmpt+=1
-
-		if not gagne :
+			
 			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
-	return gagne
+	return chemins
 
 
 def affichage() :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
 
 	case_dep = random.randint(1,LONGUEUR*LARGEUR)
-	print('\nCase de départ: ',case_dep)
-	chemins = cavalierHamiltonHeuristique(graphe(), 29)
-	print('\n',chemins[-1])
+	print('\nCase de départ: ', case_dep)
+	chemins = parcours(case_dep, [], graphe(), [])
+	print("Nb chemins:", len(chemins))
 
 	if len(chemins) == 0: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
 	else:
-		for chemin in chemins[len(chemins)-1:]:
+		for chemin in chemins[:10]:
 
 			Tab = [0 for i in range(LONGUEUR*LARGEUR)]
 
