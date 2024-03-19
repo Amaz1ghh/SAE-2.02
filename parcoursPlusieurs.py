@@ -1,10 +1,9 @@
 import random
 from tkinter import *
+import time
 
-LONGUEUR = 5
-LARGEUR = 5
-
-alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+LONGUEUR = 6
+LARGEUR = 6
 
 
 def graphe() :
@@ -18,7 +17,7 @@ def graphe() :
 	# print(Tab)
 
 	E = dict()
-	for i in range(0,LARGEUR) :
+	for i in range(0,LARGEUR):
 		for j in range(0,LONGUEUR):
 
 			E[i*LONGUEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
@@ -34,14 +33,35 @@ def graphe() :
 	
 	return E
 
-def parcours(case, chemin, graphe, chemins) :
+def parcoursProfondeur(case, graphe, chemin = [], chemins = []) :
 	"""
 		case : case actuelle du cavalier.
 	"""
-	if chemin is None:
-		chemin=[]
-	if chemins is None:
-		chemins=[]
+
+	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
+
+	
+	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
+		chemins.append(chemin.copy())
+
+	else :
+		voisins = []
+		for u in graphe[case]:
+			if u not in chemin:
+				voisins.append(u)
+		cmpt = 0
+		while cmpt < len(voisins):
+			chemins = parcoursProfondeur(voisins[cmpt], graphe, chemin, chemins)
+			cmpt+=1
+			
+			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
+	return chemins
+
+
+def parcoursHeuristique(case, graphe, chemin = [], chemins = []) :
+	"""
+		case : case actuelle du cavalier.
+	"""
 
 	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 
@@ -55,8 +75,7 @@ def parcours(case, chemin, graphe, chemins) :
 			if u not in chemin:
 				voisins.append(u)
 
-
-		# --------Permet d'aller plus vite-------- 
+		# --------Permet d'aller plus vite (partie heuristique)-------- 
 
 		voisinsNbPossibles = []
 		for u in voisins :
@@ -70,7 +89,31 @@ def parcours(case, chemin, graphe, chemins) :
 
 		cmpt = 0
 		while cmpt < len(voisins):
-			chemins = parcours(voisins[cmpt], chemin, graphe, chemins)
+			chemins = parcoursHeuristique(voisins[cmpt], graphe, chemin, chemins)
+			cmpt+=1
+			
+			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
+	return chemins
+
+def parcoursNonHeuristique(case, graphe, chemin = [], chemins = []) :
+	"""
+		case : case actuelle du cavalier.
+	"""
+
+	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
+
+	
+	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
+		chemins.append(chemin.copy())
+
+	else:
+		voisins = []
+		for u in graphe[case]:
+			if u not in chemin:
+				voisins.append(u)
+		cmpt = 0
+		while cmpt < len(voisins):
+			chemins = parcoursHeuristique(voisins[cmpt], graphe, chemin, chemins)
 			cmpt+=1
 			
 			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
@@ -80,10 +123,13 @@ def parcours(case, chemin, graphe, chemins) :
 def affichage() :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
 
-	case_dep = random.randint(1,LONGUEUR*LARGEUR)
+	case_dep = 1
 	print('\nCase de départ: ', case_dep)
-	chemins = parcours(case_dep, [], graphe(), [])
-	print("Nb chemins:", len(chemins))
+	c1 = time.process_time()
+	chemins = parcoursHeuristique(case_dep, graphe())
+	c2 = time.process_time()
+	cpu = c2-c1
+	print("Nb chemins:", len(chemins), '\n')
 
 	if len(chemins) == 0: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
 	else:
@@ -107,6 +153,7 @@ def affichage() :
 				else : rg+=1
 
 			print('\n\n')
+		print('CPU: ', cpu)
 
 
 
