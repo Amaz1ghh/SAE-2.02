@@ -6,29 +6,35 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # variable temp
-tabtemp = [5, 14, 25, 18, 21, 12, 1, 8, 17, 6, 3, 10, 19, 22, 11, 2, 9, 20, 23, 16, 7, 4, 13, 24, 15]
-caseDejaParcouru = []
-indiceCurentCase = 0
+tabtemp = [30, 34, 26, 13, 2, 10, 6, 17, 4, 12, 23, 36, 28, 32, 19, 8, 21, 25, 33, 29, 18, 5, 9, 1, 14, 22, 35, 24, 11, 15, 7, 3, 16, 27, 31, 20]
+nbChemTemp = 153
 
 # nb de cases
-LONGUEUR = 5
-HAUTEUR = 5
+LONGUEUR = 6
+HAUTEUR = 6
 
 # Définition de la taille de la fenêtre
 TAILLE_CASE = 101
 
 # Variable de positionnement du cavalier
 estPose = False
+estArrivee = False # Permet de stoper l'ajout des case à "caseDejaParcouru"
 x = 0
 y = 0
 
 # Tableau des flèches pour le parcours du cavalier
 tabFl = []
+caseDejaParcouru = []
+indiceCurentCase = 0
 
 # Couleurs
 blanc = (210, 180, 140)
 noir = (139, 69, 19)
 vert = (166, 231, 53)
+
+# Texte
+font = pygame.font.Font('freesansbold.ttf', 20)
+text = font.render('Nombre de Chemins trouvés : ' + str(nbChemTemp), True, (10,10,10))
 
 # Image
 image = pygame.image.load("cavalier.png")
@@ -50,18 +56,22 @@ def centreCase(caseCoord):
 
 
 # Création de la fenêtre
-fenetre = pygame.display.set_mode((TAILLE_CASE*LONGUEUR, TAILLE_CASE*HAUTEUR))
-pygame.display.set_caption("Échiquier Vierge")
+fenetre = pygame.display.set_mode((TAILLE_CASE*LONGUEUR+200, TAILLE_CASE*HAUTEUR))
+pygame.display.set_caption("Problème : Le Parcours du Cavalier")
 
 # Boucle principale
 while True:
 
     # Dessin de l'échiquier
-    fenetre.fill((0, 0, 0))
+    fenetre.fill((200,150,100))
     for ligne in range(LONGUEUR):
         for colonne in range(HAUTEUR):
             couleur_case = blanc if (ligne + colonne) % 2 == 0 else noir
-            if 
+            if (colonne) * (LONGUEUR) + (ligne +1) in caseDejaParcouru:
+                couleur_case_copy = []
+                for i in couleur_case:
+                    couleur_case_copy.append(i//2)
+                couleur_case = tuple(couleur_case_copy)
             pygame.draw.rect(fenetre, couleur_case, (ligne * TAILLE_CASE, colonne * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE))
 
     for event in pygame.event.get():
@@ -79,12 +89,23 @@ while True:
             
     if estPose:
         fenetre.blit(image, deplacerCavalier(tabtemp[indiceCurentCase]))
-        if indiceCurentCase < len(tabtemp) and indiceCurentCase > 0 :
-                pos1 = deplacerCavalier(tabtemp[indiceCurentCase-1])
-                pos2 = deplacerCavalier(tabtemp[indiceCurentCase])
-                tabFl.append((pos1, pos2))
-        if indiceCurentCase < len(tabtemp) - 1:
-            indiceCurentCase+=1
+
+        if not estArrivee:
+            caseDejaParcouru.append(tabtemp[indiceCurentCase])
+
+        if indiceCurentCase < len(tabtemp) :
+                
+                if indiceCurentCase > 0:
+                    pos1 = deplacerCavalier(tabtemp[indiceCurentCase-1])
+                    pos2 = deplacerCavalier(tabtemp[indiceCurentCase])
+                    tabFl.append((pos1, pos2))
+                if indiceCurentCase < len(tabtemp)-1:
+                    indiceCurentCase+=1
+                
+        else:
+            estArrivee = True
+        
+
         
 
     elif x != 0 and y != 0:

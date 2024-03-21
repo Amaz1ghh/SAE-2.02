@@ -1,8 +1,8 @@
 import random
 from tkinter import *
 
-LONGUEUR = 5
-LARGEUR = 5
+LONGUEUR = 6
+LARGEUR = 6
 
 alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
