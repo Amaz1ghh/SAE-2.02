@@ -7,6 +7,7 @@ clock = pygame.time.Clock()
 
 # variable temp
 tabtemp = [5, 14, 25, 18, 21, 12, 1, 8, 17, 6, 3, 10, 19, 22, 11, 2, 9, 20, 23, 16, 7, 4, 13, 24, 15]
+caseDejaParcouru = []
 indiceCurentCase = 0
 
 # nb de cases
@@ -27,7 +28,7 @@ tabFl = []
 # Couleurs
 blanc = (210, 180, 140)
 noir = (139, 69, 19)
-vert = (0, 255, 0)
+vert = (166, 231, 53)
 
 # Image
 image = pygame.image.load("cavalier.png")
@@ -37,13 +38,13 @@ image = pygame.transform.scale(image, (TAILLE_CASE, TAILLE_CASE))
 # fonction qui place le cavalier
 
 def deplacerCavalier(caseIndice):
-    indicex = (caseIndice-1) % LONGUEUR * TAILLE_CASE
-    indicey = (caseIndice-1) // LONGUEUR * TAILLE_CASE
+    indicex = int((caseIndice-1) % LONGUEUR * TAILLE_CASE)
+    indicey = int((caseIndice-1) // LONGUEUR * TAILLE_CASE)
     return (indicex, indicey)
 
 def centreCase(caseCoord):
-    indicex = caseCoord[0] + TAILLE_CASE/2
-    indicey = caseCoord[1] + TAILLE_CASE/2
+    indicex = int(caseCoord[0] + TAILLE_CASE/2)
+    indicey = int(caseCoord[1] + TAILLE_CASE/2)
     return (indicex, indicey)
 
 
@@ -60,6 +61,7 @@ while True:
     for ligne in range(LONGUEUR):
         for colonne in range(HAUTEUR):
             couleur_case = blanc if (ligne + colonne) % 2 == 0 else noir
+            if 
             pygame.draw.rect(fenetre, couleur_case, (ligne * TAILLE_CASE, colonne * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE))
 
     for event in pygame.event.get():
@@ -78,8 +80,8 @@ while True:
     if estPose:
         fenetre.blit(image, deplacerCavalier(tabtemp[indiceCurentCase]))
         if indiceCurentCase < len(tabtemp) and indiceCurentCase > 0 :
-                pos1 = centreCase(deplacerCavalier(tabtemp[indiceCurentCase-1]))
-                pos2 = centreCase(deplacerCavalier(tabtemp[indiceCurentCase]))
+                pos1 = deplacerCavalier(tabtemp[indiceCurentCase-1])
+                pos2 = deplacerCavalier(tabtemp[indiceCurentCase])
                 tabFl.append((pos1, pos2))
         if indiceCurentCase < len(tabtemp) - 1:
             indiceCurentCase+=1
@@ -90,7 +92,7 @@ while True:
     
     # Dessin du chemin
     for fl in tabFl:
-        pygame.draw.line(fenetre, vert, fl[0], fl[1], 3)
+        pygame.draw.line(fenetre, vert, centreCase(fl[0]), centreCase(fl[1]), 3)
     
     
     # Rafraîchissement de l'affichage
