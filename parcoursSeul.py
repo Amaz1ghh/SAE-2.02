@@ -35,17 +35,7 @@ def graphe() :
 	return E
 
 
-def cavalierHamiltonHeuristique(graphe, case_dep) :
-	""" 
-		recherche d'un chemin hamiltonien dans le graphe du cavalier.
-	"""
-	chemin = [] # contiendra les cases dans leur ordre de visite
-	print(graphe)
-	parcours(case_dep, chemin, graphe)
-	return chemin
-
-
-def parcours(case, chemin, graphe) :
+def parcoursSeulHeuristique(case, chemin, graphe) :
 	"""
 		case : case actuelle du cavalier.
 	"""
@@ -78,7 +68,7 @@ def parcours(case, chemin, graphe) :
 
 		cmpt = 0
 		while cmpt < len(voisins) and not gagne:
-			gagne = parcours(voisins[cmpt], chemin, graphe)
+			gagne = parcoursSeulHeuristique(voisins[cmpt], chemin, graphe)
 			cmpt+=1
 
 		if not gagne :
@@ -86,15 +76,35 @@ def parcours(case, chemin, graphe) :
 
 	return gagne
 
+def parcoursSeulNonHeuristique(case, chemin, graphe) :
+	"""
+		case : case actuelle du cavalier.
+	"""
+	 
+	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 
-def affichage() :
+	
+	if len(chemin) == LONGUEUR*LARGEUR:
+		gagne = True
+
+	else :
+		voisins = []
+		gagne = False
+		for u in graphe[case]:
+			if u not in chemin:
+				voisins.append(u)
+		cmpt = 0
+		while cmpt < len(voisins) and not gagne:
+			gagne = parcoursSeulNonHeuristique(voisins[cmpt], chemin, graphe)
+			cmpt+=1
+
+		if not gagne :
+			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
+
+	return gagne
+
+def affichageS(chemin, cpu, case_dep) :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
-
-	case_dep = random.randint(1,LONGUEUR*LARGEUR)
-	chemin = cavalierHamiltonHeuristique(graphe(), case_dep)
-
-	print(chemin)
-
 	if len(chemin) < LONGUEUR*LARGEUR: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
 	else:
 
@@ -115,7 +125,4 @@ def affichage() :
 				print()
 				rg = 1
 			else : rg+=1
-
-
-
-affichage()
+		print('\nCPU: ', cpu, '\n\n')

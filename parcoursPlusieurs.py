@@ -2,8 +2,8 @@ import random
 from tkinter import *
 import time
 
-LONGUEUR = 6
-LARGEUR = 6
+LONGUEUR = 5
+LARGEUR = 5
 
 
 def graphe() :
@@ -32,30 +32,6 @@ def graphe() :
 			if 0 <= i+1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j+2])
 	
 	return E
-
-def parcoursProfondeur(case, graphe, chemin = [], chemins = []) :
-	"""
-		case : case actuelle du cavalier.
-	"""
-
-	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
-
-	
-	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
-		chemins.append(chemin.copy())
-
-	else :
-		voisins = []
-		for u in graphe[case]:
-			if u not in chemin:
-				voisins.append(u)
-		cmpt = 0
-		while cmpt < len(voisins):
-			chemins = parcoursProfondeur(voisins[cmpt], graphe, chemin, chemins)
-			cmpt+=1
-			
-			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
-	return chemins
 
 
 def parcoursHeuristique(case, graphe, chemin = [], chemins = []) :
@@ -113,27 +89,18 @@ def parcoursNonHeuristique(case, graphe, chemin = [], chemins = []) :
 				voisins.append(u)
 		cmpt = 0
 		while cmpt < len(voisins):
-			chemins = parcoursHeuristique(voisins[cmpt], graphe, chemin, chemins)
+			chemins = parcoursNonHeuristique(voisins[cmpt], graphe, chemin, chemins)
 			cmpt+=1
 			
 			chemin.pop() #  case est supprimée de chemin si elle a mené à une impasse
 	return chemins
 
 
-def affichage() :
+def affichageP(chemins, cpu, case_dep) :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
-
-	case_dep = 1
-	print('\nCase de départ: ', case_dep)
-	c1 = time.process_time()
-	chemins = parcoursHeuristique(case_dep, graphe())
-	c2 = time.process_time()
-	cpu = c2-c1
-	print("Nb chemins:", len(chemins), '\n')
-
 	if len(chemins) == 0: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
 	else:
-		for chemin in chemins[:10]:
+		for chemin in chemins[:1]:
 
 			Tab = [0 for i in range(LONGUEUR*LARGEUR)]
 
@@ -152,9 +119,6 @@ def affichage() :
 					rg = 1
 				else : rg+=1
 
-			print('\n\n')
-		print('CPU: ', cpu)
+			# print('\n\n')
+		print('\nCPU: ', cpu, '\n\n')
 
-
-
-affichage()
