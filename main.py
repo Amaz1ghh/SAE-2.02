@@ -1,6 +1,13 @@
 import pygame
 import sys
 
+# nb de cases
+LONGUEUR = 6
+HAUTEUR = 6
+
+TAILLE_CASE = 101
+TAILLE_ZONE_TEXT = 200
+
 # Initialisation de Pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -9,21 +16,13 @@ clock = pygame.time.Clock()
 tabtemp = [30, 34, 26, 13, 2, 10, 6, 17, 4, 12, 23, 36, 28, 32, 19, 8, 21, 25, 33, 29, 18, 5, 9, 1, 14, 22, 35, 24, 11, 15, 7, 3, 16, 27, 31, 20]
 nbChemTemp = 153
 
-# nb de cases
-LONGUEUR = 6
-HAUTEUR = 6
-
-# Définition de la taille de la fenêtre
-TAILLE_CASE = 100
-TAILLE_ZONE_TEXT = 200
-
-# Variable de positionnement du cavalier
+# Variable de position du cavalier
 estPose = False
 estArrivee = False # Permet de stoper l'ajout des case à "caseDejaParcouru"
 x = 0
 y = 0
 
-# Tableau des flèches pour le parcours du cavalier
+# Tracé du parcours du cavalier
 tabFl = []
 caseDejaParcouru = []
 indiceCurentCase = 0
@@ -46,7 +45,7 @@ image = pygame.transform.scale(image, (TAILLE_CASE, TAILLE_CASE))
 
 # fonction qui place le cavalier
 
-def deplacerCavalier(caseIndice):
+def getCoordCaseByIndice(caseIndice):
     indicex = int((caseIndice-1) % LONGUEUR * TAILLE_CASE)
     indicey = int((caseIndice-1) // LONGUEUR * TAILLE_CASE)
     return (indicex, indicey)
@@ -81,7 +80,7 @@ while True:
     # Gestion des events
     for event in pygame.event.get():
 
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.__dict__["key"] == pygame.K_ESCAPE):
             pygame.quit()
             sys.exit()
 
@@ -95,10 +94,10 @@ while True:
     # Affichage une fois que la case de départ a été choisie
     if estPose:
         # Texte
-        
         fenetre.blit(text, textRect)
 
-        fenetre.blit(image, deplacerCavalier(tabtemp[indiceCurentCase]))
+
+        fenetre.blit(image, getCoordCaseByIndice(tabtemp[indiceCurentCase]))
 
         if not estArrivee:
             caseDejaParcouru.append(tabtemp[indiceCurentCase])
@@ -106,8 +105,8 @@ while True:
         if indiceCurentCase < len(tabtemp) :
                 
                 if indiceCurentCase > 0:
-                    pos1 = deplacerCavalier(tabtemp[indiceCurentCase-1])
-                    pos2 = deplacerCavalier(tabtemp[indiceCurentCase])
+                    pos1 = getCoordCaseByIndice(tabtemp[indiceCurentCase-1])
+                    pos2 = getCoordCaseByIndice(tabtemp[indiceCurentCase])
                     tabFl.append((pos1, pos2))
                 if indiceCurentCase < len(tabtemp)-1:
                     indiceCurentCase+=1
