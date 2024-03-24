@@ -11,7 +11,7 @@ TAILLE_ZONE_TEXT = 200
 pygame.init()
 clock = pygame.time.Clock()
 
-# variable temp
+# Enregitrement des resultat du parcours
 tabParcours = []
 nbChem = 0
 
@@ -25,6 +25,7 @@ y = 0
 tabFl = []
 caseDejaParcouru = []
 indiceCurentCase = 0
+aucunParcours = False
 
 # Couleurs
 blanc = (210, 180, 140)
@@ -33,6 +34,7 @@ vert = (166, 231, 53)
 
 # Texte
 font = pygame.font.Font('freesansbold.ttf', 16)
+font2 = pygame.font.Font('freesansbold.ttf', 20)
 text = ""
 
 
@@ -40,7 +42,7 @@ text = ""
 image = pygame.image.load("cavalier.png")
 image = pygame.transform.scale(image, (TAILLE_CASE, TAILLE_CASE))
 
-
+# ----------------- Fonctions---------------------
 def getCoordCaseByIndice(caseIndice):
     coordx = int((caseIndice-1) % LONGUEUR * TAILLE_CASE)
     coordy = int((caseIndice-1) // LONGUEUR * TAILLE_CASE)
@@ -82,12 +84,19 @@ while True:
             pygame.quit()
             sys.exit()
 
+        #
         if event.type == pygame.MOUSEBUTTONDOWN and not estPose and event.button == 1:
-            estPose = True
-            result = parcoursNonHeuristique(getCaseIndiceByCoord(event.pos[0], event.pos[1]), graphe())
-            tabParcours = result[0]
-            nbChem = len(result)
-            text = "Chemins trouvé : " + str(nbChem)
+            if event.pos[0] < TAILLE_CASE * LONGUEUR:
+                estPose = True
+                result = parcoursNonHeuristique(getCaseIndiceByCoord(event.pos[0], event.pos[1]), graphe())
+                nbChem = len(result)
+                if nbChem > 0:
+                    tabParcours = result[0]
+                    text = "Chemins trouvés : " + str(nbChem)
+                else:
+                    aucunParcours = True
+                    tabParcours.append(getCaseIndiceByCoord(event.pos[0], event.pos[1]))
+
 
         if event.type == pygame.MOUSEMOTION and not estPose:
             x = event.pos[0]
@@ -101,23 +110,30 @@ while True:
         textRect.center = (int(TAILLE_CASE*LONGUEUR+TAILLE_ZONE_TEXT/2), 40)
         fenetre.blit(textRenderer, textRect)
 
+        if aucunParcours:
+            textRenderer2 = font2.render("Auncun chemin trouvés pour cette case", True, (10,10,10))
+            textRect2 = textRenderer2.get_rect()
+            textRect2.center = (int(TAILLE_CASE*LONGUEUR/2), int(TAILLE_CASE*HAUTEUR/2))
+            fenetre.blit(textRenderer2, textRect2)
+
         # Affichage du cavalier
         fenetre.blit(image, getCoordCaseByIndice(tabParcours[indiceCurentCase]))
 
         # Calcule du chemin vert
-        if not estArrivee:
-            caseDejaParcouru.append(tabParcours[indiceCurentCase])
-        if indiceCurentCase < len(tabParcours) :
-                
-                if indiceCurentCase > 0:
-                    pos1 = getCoordCaseByIndice(tabParcours[indiceCurentCase-1])
-                    pos2 = getCoordCaseByIndice(tabParcours[indiceCurentCase])
-                    tabFl.append((pos1, pos2))
+        if not aucunParcours:
+            if not estArrivee:
+                caseDejaParcouru.append(tabParcours[indiceCurentCase])
+            if indiceCurentCase < len(tabParcours) :
+                    
+                    if indiceCurentCase > 0:
+                        pos1 = getCoordCaseByIndice(tabParcours[indiceCurentCase-1])
+                        pos2 = getCoordCaseByIndice(tabParcours[indiceCurentCase])
+                        tabFl.append((pos1, pos2))
 
-                if indiceCurentCase < len(tabParcours)-1:
-                    indiceCurentCase+=1
-        else:
-            estArrivee = True
+                    if indiceCurentCase < len(tabParcours)-1:
+                        indiceCurentCase+=1
+            else:
+                estArrivee = True
     
     # Affichage du contours de la case en vert
     elif x != 0 and y != 0 and x < LONGUEUR*TAILLE_CASE :
@@ -128,7 +144,7 @@ while True:
         pygame.draw.line(fenetre, vert, centreCase(fl[0]), centreCase(fl[1]), 3)
     
     
-    # Rafraîchissement de l'affichage
+    # Rafraichissement de l'affichage
     pygame.display.flip()
 
     if estPose:
