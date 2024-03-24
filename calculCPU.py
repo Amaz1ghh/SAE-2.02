@@ -9,7 +9,7 @@ print("------------Non-Heuristique Seul------------\n")
 
 chemins = []
 c1 = time.process_time()
-parcoursSeulNonHeuristique(case_dep, chemins, graphe())
+parcoursSeulNonHeuristique(case_dep, chemins, grapheSeul())
 c2 = time.process_time()
 cpu = c2-c1
 
@@ -20,7 +20,7 @@ print("------------Heuristique Seul------------\n")
 
 chemins = []
 c1 = time.process_time()
-parcoursSeulHeuristique(case_dep, chemins, graphe())
+parcoursSeulHeuristique(case_dep, chemins, grapheSeul())
 c2 = time.process_time()
 cpu = c2-c1
 
