@@ -3,33 +3,31 @@ from tkinter import *
 import time
 
 LONGUEUR = 5
-LARGEUR = 5
+HAUTEUR = 5
 
 
 def graphe() :
 	Tab = []
-	for i in range(LARGEUR):
+	for i in range(HAUTEUR):
 		ls = []
 		for j in range(LONGUEUR):
 			ls.append(i*LONGUEUR + j + 1)
 		Tab.append(ls)
 
-	# print(Tab)
-
 	E = dict()
-	for i in range(0,LARGEUR):
+	for i in range(0,HAUTEUR):
 		for j in range(0,LONGUEUR):
 
 			E[i*LONGUEUR + j + 1] = [] # E[k]  : liste des voisins de la case k
-			if 0 <= i-2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j-1])
-			if 0 <= i-2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j+1])
-			if 0 <= i+2 < LARGEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j-1])
-			if 0 <= i+2 < LARGEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j+1])
+			if 0 <= i-2 < HAUTEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j-1])
+			if 0 <= i-2 < HAUTEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-2][j+1])
+			if 0 <= i+2 < HAUTEUR and  0 <= j-1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j-1])
+			if 0 <= i+2 < HAUTEUR and  0 <= j+1 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+2][j+1])
 	
-			if 0 <= i-1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j-2])
-			if 0 <= i-1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j+2])
-			if 0 <= i+1 < LARGEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j-2])
-			if 0 <= i+1 < LARGEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j+2])
+			if 0 <= i-1 < HAUTEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j-2])
+			if 0 <= i-1 < HAUTEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i-1][j+2])
+			if 0 <= i+1 < HAUTEUR and  0 <= j-2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j-2])
+			if 0 <= i+1 < HAUTEUR and  0 <= j+2 < LONGUEUR : E[i*LONGUEUR + j + 1].append(Tab[i+1][j+2])
 	
 	return E
 
@@ -42,7 +40,7 @@ def parcoursHeuristique(case, graphe, chemin = [], chemins = []) :
 	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 
 	
-	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
+	if len(chemin) == LONGUEUR*HAUTEUR and chemin not in chemins:
 		chemins.append(chemin.copy())
 
 	else :
@@ -79,7 +77,7 @@ def parcoursNonHeuristique(case, graphe, chemin = [], chemins = []) :
 	chemin.append(case) # case est ajoutée au chemin, ce qui la marque comme visitée également
 
 	
-	if len(chemin) == LONGUEUR*LARGEUR and chemin not in chemins:
+	if len(chemin) == LONGUEUR*HAUTEUR and chemin not in chemins:
 		chemins.append(chemin.copy())
 
 	else:
@@ -98,11 +96,11 @@ def parcoursNonHeuristique(case, graphe, chemin = [], chemins = []) :
 
 def affichageP(chemins, cpu, case_dep) :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
-	if len(chemins) == 0: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
+	if len(chemins) == 0: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", HAUTEUR, " avec comme case de départ : ", case_dep)
 	else:
 		for chemin in chemins[:1]:
 
-			Tab = [0 for i in range(LONGUEUR*LARGEUR)]
+			Tab = [0 for i in range(LONGUEUR*HAUTEUR)]
 
 
 			for i in range(len(Tab)):
