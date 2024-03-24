@@ -84,7 +84,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-        #
+        # Vérifie si la case est valide et lance la recherche de parcours
         if event.type == pygame.MOUSEBUTTONDOWN and not estPose and event.button == 1:
             if event.pos[0] < TAILLE_CASE * LONGUEUR:
                 estPose = True
@@ -111,6 +111,7 @@ while True:
         fenetre.blit(textRenderer, textRect)
 
         if aucunParcours:
+            # Texte si aucun chemin n'a été trouvé
             textRenderer2 = font2.render("Auncun chemin trouvés pour cette case", True, (10,10,10))
             textRect2 = textRenderer2.get_rect()
             textRect2.center = (int(TAILLE_CASE*LONGUEUR/2), int(TAILLE_CASE*HAUTEUR/2))
@@ -152,6 +153,3 @@ while True:
     else:
         clock.tick(60)
 
-
-
-# Fin du programme
