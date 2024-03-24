@@ -1,7 +1,3 @@
-import random
-from tkinter import *
-import time
-
 LONGUEUR = 5
 HAUTEUR = 5
 
@@ -13,6 +9,7 @@ def graphe() :
 		for j in range(LONGUEUR):
 			ls.append(i*LONGUEUR + j + 1)
 		Tab.append(ls)
+
 
 	E = dict()
 	for i in range(0,HAUTEUR):

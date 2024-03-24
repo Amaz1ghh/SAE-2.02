@@ -1,13 +1,7 @@
-import random
-from tkinter import *
-
 LONGUEUR = 6
 LARGEUR = 6
 
-alph = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-
-
-def graphe() :
+def grapheSeul() :
 	Tab = []
 	for i in range(LARGEUR):
 		ls = []
@@ -15,7 +9,6 @@ def graphe() :
 			ls.append(i*LONGUEUR + j + 1)
 		Tab.append(ls)
 
-	print(Tab)
 
 	E = dict()
 	for i in range(0,LARGEUR) :
@@ -105,7 +98,7 @@ def parcoursSeulNonHeuristique(case, chemin, graphe) :
 
 def affichageS(chemin, cpu, case_dep) :
 	""" affichage simple de l'échiquier avec ordre de parcours des cellules indiqué."""
-	if len(chemin) < LONGUEUR*LARGEUR: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep)
+	if len(chemin) < LONGUEUR*LARGEUR: print("Aucune solution possible dans une grille de ", LONGUEUR, " x ", LARGEUR, " avec comme case de départ : ", case_dep, "len: ", len(chemin))
 	else:
 
 		Tab = [0 for i in range(LONGUEUR*LARGEUR)]
