@@ -50,10 +50,10 @@ def parcoursHeuristique(case, graphe, chemin = [], chemins = []) :
 
 		voisinsNbPossibles = []
 		for u in voisins :
-			nb = len( [v for v in graphe[u] if v not in chemin]) # nb de possibles à partir de u
+			nb = len( [v for v in graphe[u] if v not in chemin]) # nombre de voisins possibles à partir de u
 			voisinsNbPossibles.append([u,nb])
 
-		voisinsNbPossibles.sort(key= lambda x:x[1])# tri croissant suivant le nombre de possibles
+		voisinsNbPossibles.sort(key= lambda x:x[1])# tri croissant suivant le nombre de voisins possibles
 		voisins = [ x[0] for x in voisinsNbPossibles ] # on récupère uniquement les voisins
 
 		# ----------------------------------------- 
@@ -114,6 +114,6 @@ def affichageP(chemins, cpu, case_dep) :
 					rg = 1
 				else : rg+=1
 
-			# print('\n\n')
+			
 		print('\nCPU: ', cpu, '\n\n')
 

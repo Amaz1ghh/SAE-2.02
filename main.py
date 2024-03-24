@@ -2,7 +2,7 @@ import pygame
 import sys
 from parcoursPlusieurs import *
 
-# nb de cases
+# nombre de cases
 
 TAILLE_CASE = 101
 TAILLE_ZONE_TEXT = 200
@@ -11,13 +11,13 @@ TAILLE_ZONE_TEXT = 200
 pygame.init()
 clock = pygame.time.Clock()
 
-# Enregitrement des resultat du parcours
+# Enregitrement des résultats du parcours
 tabParcours = []
 nbChem = 0
 
-# Variable de position du cavalier
+# Variables de position du cavalier
 estPose = False
-estArrivee = False # Permet de stoper l'ajout des case à "caseDejaParcouru"
+estArrivee = False # Permet de stopper l'ajout des cases à "caseDejaParcouru"
 x = 0
 y = 0
 
@@ -32,7 +32,7 @@ blanc = (210, 180, 140)
 noir = (139, 69, 19)
 vert = (166, 231, 53)
 
-# Texte
+# Textes
 font = pygame.font.Font('freesansbold.ttf', 16)
 font2 = pygame.font.Font('freesansbold.ttf', 20)
 text = ""
@@ -120,7 +120,7 @@ while True:
         # Affichage du cavalier
         fenetre.blit(image, getCoordCaseByIndice(tabParcours[indiceCurentCase]))
 
-        # Calcule du chemin vert
+        # Calcul du chemin vert
         if not aucunParcours:
             if not estArrivee:
                 caseDejaParcouru.append(tabParcours[indiceCurentCase])
@@ -136,7 +136,7 @@ while True:
             else:
                 estArrivee = True
     
-    # Affichage du contours de la case en vert
+    # Affichage du contour de la case en vert
     elif x != 0 and y != 0 and x < LONGUEUR*TAILLE_CASE :
         pygame.draw.rect(fenetre, vert,(x//TAILLE_CASE*TAILLE_CASE,y//TAILLE_CASE*TAILLE_CASE, TAILLE_CASE,TAILLE_CASE), 5)
     
