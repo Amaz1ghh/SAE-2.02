@@ -84,7 +84,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # Vérifie si la case est valide et lance la recherche de parcours
+        # Vérifie si la case est validée -> lance la recherche de parcours
         if event.type == pygame.MOUSEBUTTONDOWN and not estPose and event.button == 1:
             if event.pos[0] < TAILLE_CASE * LONGUEUR:
                 estPose = True
