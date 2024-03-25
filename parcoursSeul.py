@@ -51,7 +51,7 @@ def parcoursSeulHeuristique(case, chemin, graphe) :
 
 		voisinsNbPossibles = []
 		for u in voisins :
-			nb = len( [v for v in graphe[u] if v not in chemin]) # nmbre de voisins possibles à partir de u
+			nb = len( [v for v in graphe[u] if v not in chemin]) # nombre de voisins possibles à partir de u
 			voisinsNbPossibles.append([u,nb])
 
 		voisinsNbPossibles.sort(key= lambda x:x[1])# tri croissant suivant le nombre de voisins possibles

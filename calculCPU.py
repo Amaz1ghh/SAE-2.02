@@ -2,8 +2,8 @@ from parcoursSeul import *
 from parcoursPlusieurs import *
 import time
 
-# case_dep = random.randint(1,LONGUEUR*LARGEUR)
 case_dep = 1
+# case_dep = random.randint(1,LONGUEUR*LARGEUR) ****Pour avoir une case random****
 
 print("------------Non-Heuristique Seul------------\n")
 
